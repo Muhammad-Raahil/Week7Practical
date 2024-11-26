@@ -37,25 +37,28 @@ jobs:
         run: |
           git clone https://github.com/your/repository.git  # Replace with actual repo URLs
 
-      # Step 5: Setup Test Environment
+      # Step 5: Make setup_environment.sh executable
+      - name: Make setup_environment.sh executable
+        run: chmod +x steps/setup_environment.sh
+
+      # Step 6: Setup Test Environment
       - name: Setup Test Environment
         run: |
-          # Replace with environment setup commands if necessary
           source steps/setup_environment.sh  # Custom environment setup script, updated with lowercase folder name
 
-      # Step 6: Execute Tests
+      # Step 7: Execute Tests
       - name: Run Tests
         run: |
           # Run the behave tests with the correct path for your steps
           behave  # Running the BDD tests with behave
 
-      # Step 7: Output the Test Results
+      # Step 8: Output the Test Results
       - name: Output Test Results
         run: |
           # Example for storing the test result
           if [ -f result.log ]; then cat result.log; fi  # Replace with actual test result output command
 
-      # Step 8: Handle Issues (optional)
+      # Step 9: Handle Issues (optional)
       - name: Check for Issues (if any)
         run: |
           # Optionally, parse and check if any issues exist
