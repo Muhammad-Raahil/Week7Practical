@@ -1,3 +1,7 @@
+name: CI Process
+run-name: ${{ github.actor }} is learning github actions
+on: [push]
+
 jobs:
   behave-testing:
     # Setup of simple OS of choice, i.e., Linux
