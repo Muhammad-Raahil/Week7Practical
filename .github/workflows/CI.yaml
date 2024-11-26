@@ -26,29 +26,29 @@ jobs:
           sudo apt-get install -y build-essential curl git python3 python3-pip
           sudo apt-get install -y <other-dependencies>  # Replace with actual dependencies for your project
 
-      # Step 3: Setup tools necessary for testing
+      # Step 3: Install Test Tools
       - name: Install Test Tools
         run: |
           pip install -r requirements.txt  # If using Python; replace with tool-specific commands (npm, yarn, etc.)
       
-      # Step 4: Extract necessary repositories
+      # Step 4: Clone Additional Repositories (if necessary)
       - name: Clone Additional Repositories (if necessary)
         run: |
           git clone https://github.com/your/repository.git  # Replace with actual repo URLs
 
-      # Step 5: Run Setup commands for tests
+      # Step 5: Setup Test Environment
       - name: Setup Test Environment
         run: |
           # Replace with environment setup commands if necessary
           source setup_environment.sh  # Custom environment setup script if needed
 
-      # Step 6: Execute tests
+      # Step 6: Execute Tests
       - name: Run Tests
         run: |
           # Replace with commands to run your tests (e.g., pytest, mocha, etc.)
           python3 -m unittest discover  # Example for Python tests
 
-      # Step 7: Output the test results
+      # Step 7: Output the Test Results
       - name: Output Test Results
         run: |
           # Example for storing the test result
