@@ -4,22 +4,20 @@ on: [push]
 
 jobs:
   behave-testing:
-    runs-on: ubuntu-latest  # Still running on Ubuntu (Linux)
+    runs-on: ubuntu-latest  # Ubuntu-based environment
 
     steps:
-      - name: Checkout code
+      # Checkout the repository
+      - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
-      # List files and directories to verify folder structure
-      - name: List files in features folder
-        run: |
-          ls -R features  # List all files and directories for features folder
-
-      - name: Setup Python
+      # Set up Python environment
+      - name: Set up Python 3.9
         uses: actions/setup-python@v5.3.0
         with:
           python-version: '3.9'
 
+      # Install dependencies for Behave
       - name: Install Behave and dependencies
         run: |
           python -m venv venv  # Create virtual environment
@@ -27,16 +25,24 @@ jobs:
           pip install --upgrade pip
           pip install behave
 
-      - name: Verify virtual environment activation
+      # Debug the current directory structure (add this for clarity)
+      - name: Debug directory structure
         run: |
-          source venv/bin/activate
-          which python  # Confirm Python location
-          python --version  # Confirm Python version
-          pip freeze  # Confirm installed packages
+          pwd  # Print the current working directory
+          ls -R  # List files recursively to ensure we are in the correct directory
 
+      # Run Behave tests, specifying the correct path for features and steps
       - name: Run Behave tests
         run: |
           source venv/bin/activate  # Activate the virtual environment
-          ls features  # Check if the 'Steps' folder is visible
-          ls -d features/Steps  # List the Steps folder directly (works for Linux)
-          behave features/Steps  # Run tests with the correct path
+          ls features  # List the 'features' directory
+          ls -d features/Steps  # List the 'Steps' folder directly to ensure it exists
+          behave features/  # Run Behave tests, looking in the 'features' folder
+          
+      # Optional: Setup output for test results
+      - name: Capture Behave test results
+        run: |
+          # Behave output can be captured here, e.g., saving logs to a file
+          mkdir results
+          behave features/ > results/behave_output.log
+          cat results/behave_output.log
