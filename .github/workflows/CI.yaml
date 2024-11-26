@@ -16,7 +16,7 @@ jobs:
       # Step 1: Checkout the repository containing source code and test scripts
       - name: Checkout Code
         uses: actions/checkout@v3
-      
+
       # Step 2: Setup the environment (install dependencies)
       - name: Setup OS and Dependencies
         run: |
@@ -41,27 +41,32 @@ jobs:
       - name: Make setup_environment.sh executable
         run: chmod +x steps/setup_environment.sh
 
-      # Step 6: Setup Test Environment
+      # Step 6: Debug - Check the contents of the steps directory
+      - name: Debug - List files in steps directory
+        run: ls -l steps/
+
+      # Step 7: Debug - Display the content of setup_environment.sh
+      - name: Debug - Display setup_environment.sh content
+        run: cat steps/setup_environment.sh
+
+      # Step 8: Setup Test Environment
       - name: Setup Test Environment
         run: |
-          source steps/setup_environment.sh  # Custom environment setup script, updated with lowercase folder name
+          source steps/setup_environment.sh  # Custom environment setup script
 
-      # Step 7: Execute Tests
+      # Step 9: Run Tests
       - name: Run Tests
         run: |
-          # Run the behave tests with the correct path for your steps
           behave  # Running the BDD tests with behave
 
-      # Step 8: Output the Test Results
+      # Step 10: Output the Test Results
       - name: Output Test Results
         run: |
-          # Example for storing the test result
-          if [ -f result.log ]; then cat result.log; fi  # Replace with actual test result output command
+          if [ -f result.log ]; then cat result.log; fi
 
-      # Step 9: Handle Issues (optional)
-      - name: Check for Issues (if any)
+      # Step 11: Check for Issues (optional)
+      - name: Check for Issues
         run: |
-          # Optionally, parse and check if any issues exist
           if grep -q "ERROR" result.log; then
             echo "Issues found in the test!";
             exit 1;
