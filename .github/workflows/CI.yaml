@@ -1,49 +1,66 @@
-name: CI Process
-run-name: ${{ github.actor }} is learning github actions
-on: [push]
+# CI Pipeline YAML Configuration
+
+name: CI Automation Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  behave-testing:
-    runs-on: ubuntu-latest  # Ubuntu-based environment
-
+  setup_and_test:
+    runs-on: ubuntu-latest  # Using an Ubuntu Linux environment
+    
     steps:
-      # Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v4.2.2
-
-      # Set up Python environment
-      - name: Set up Python 3.9
-        uses: actions/setup-python@v5.3.0
-        with:
-          python-version: '3.9'
-
-      # Install dependencies for Behave
-      - name: Install Behave and dependencies
+      # Step 1: Checkout the repository containing source code and test scripts
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      # Step 2: Setup the environment (install dependencies)
+      - name: Setup OS and Dependencies
         run: |
-          python -m venv venv  # Create virtual environment
-          source venv/bin/activate  # Activate the virtual environment
-          pip install --upgrade pip
-          pip install behave
+          sudo apt-get update
+          sudo apt-get install -y build-essential curl git python3 python3-pip
+          sudo apt-get install -y <other-dependencies>  # Replace with actual dependencies for your project
 
-      # Debug the current directory structure (add this for clarity)
-      - name: Debug directory structure
+      # Step 3: Install Test Tools
+      - name: Install Test Tools
         run: |
-          pwd  # Print the current working directory
-          ls -R  # List files recursively to ensure we are in the correct directory
+          pip install -r requirements.txt  # If using Python; replace with tool-specific commands (npm, yarn, etc.)
+      
+      # Step 4: Clone Additional Repositories (if necessary)
+      - name: Clone Additional Repositories (if necessary)
+        run: |
+          git clone https://github.com/your/repository.git  # Replace with actual repo URLs
 
-      # Run Behave tests, specifying the correct path for features and steps
-      - name: Run Behave tests
+      # Step 5: Setup Test Environment
+      - name: Setup Test Environment
         run: |
-          source venv/bin/activate  # Activate the virtual environment
-          ls features  # List the 'features' directory
-          ls -d features/Steps  # List the 'Steps' folder directly to ensure it exists
-          behave features/  # Run Behave tests, looking in the 'features' folder
-          
-      # Optional: Setup output for test results
-      - name: Capture Behave test results
+          # Replace with environment setup commands if necessary
+          source steps/setup_environment.sh  # Custom environment setup script, updated with lowercase folder name
+
+      # Step 6: Execute Tests
+      - name: Run Tests
         run: |
-          # Behave output can be captured here, e.g., saving logs to a file
-          mkdir results
-          behave features/ > results/behave_output.log
-          cat results/behave_output.log
-          
+          # Replace with commands to run your tests (e.g., pytest, mocha, etc.)
+          python3 -m unittest discover  # Example for Python tests
+
+      # Step 7: Output the Test Results
+      - name: Output Test Results
+        run: |
+          # Example for storing the test result
+          if [ -f result.log ]; then cat result.log; fi  # Replace with actual test result output command
+
+      # Step 8: Handle Issues (optional)
+      - name: Check for Issues (if any)
+        run: |
+          # Optionally, parse and check if any issues exist
+          if grep -q "ERROR" result.log; then
+            echo "Issues found in the test!";
+            exit 1;
+          else
+            echo "No issues found.";
+          fi
