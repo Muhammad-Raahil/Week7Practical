@@ -46,3 +46,4 @@ jobs:
           mkdir results
           behave features/ > results/behave_output.log
           cat results/behave_output.log
+          
