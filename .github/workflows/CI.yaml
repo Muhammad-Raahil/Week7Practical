@@ -4,30 +4,38 @@ on: [push]
 
 jobs:
   behave-testing:
-    # Setup of simple OS of choice, i.e., Linux
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the code
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4.2.2
 
-      # Install Python and dependencies
+      # List files to verify the folder structure
+      - name: List files and directories
+        run: |
+          ls -R  # List all files and directories for verification
+
       - name: Setup Python
         uses: actions/setup-python@v5.3.0
         with:
           python-version: '3.9'
 
-      # Install Behave and dependencies
       - name: Install Behave and dependencies
         run: |
           python -m venv venv  # Create virtual environment
-          source venv/bin/activate
+          source venv/bin/activate  # Activate the virtual environment
           pip install --upgrade pip
           pip install behave
 
-      # Run Behave tests
+      - name: Verify virtual environment activation
+        run: |
+          source venv/bin/activate
+          which python  # Confirm Python location
+          python --version  # Confirm Python version
+          pip freeze  # Confirm installed packages
+
       - name: Run Behave tests
         run: |
           source venv/bin/activate  # Activate the virtual environment
-          behave features/Steps  # Point Behave to the correct folder with the capital S
+          ls features  # Check if the 'Steps' folder is visible
+          behave features/Steps  # Run tests with the correct path
