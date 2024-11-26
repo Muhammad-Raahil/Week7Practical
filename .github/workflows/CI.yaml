@@ -1,39 +1,33 @@
 name: CI Process
-run-name: ${{ github.actor }} is learning GitHub actions
+run-name: ${{ github.actor }} is learning github actions
 on: [push]
 
 jobs:
   behave-testing:
     # Setup of simple OS of choice, i.e., Linux
-    # Create VM with Ubuntu OS
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
+      # Checkout the code
       - name: Checkout
         uses: actions/checkout@v4.2.2
 
-      # Step 2: List files in the repository (for debugging purposes)
-      - name: List repo files
-        run: |
-          ls
-
-      # Step 3: Setup Python environment
+      # Install Python and dependencies
       - name: Setup Python
         uses: actions/setup-python@v5.3.0
         with:
           python-version: '3.9'
 
-      # Step 4: Install Behave and dependencies
+      # Install Behave and dependencies
       - name: Install Behave and dependencies
         run: |
           python -m venv venv  # Create virtual environment
-          source venv/bin/activate  # Activate the virtual environment
+          source venv/bin/activate
           pip install --upgrade pip
-          pip install behave  # Install Behave testing tool
+          pip install behave
 
-      # Step 5: Run Behave tests
+      # Run Behave tests
       - name: Run Behave tests
         run: |
           source venv/bin/activate  # Activate the virtual environment
-          behave  # Run the tests
+          behave features/Steps  # Point Behave to the correct folder with the capital S
