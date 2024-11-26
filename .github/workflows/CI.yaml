@@ -52,22 +52,22 @@ jobs:
       - name: Run tests
         run: |
           cd your-test-repo
-          pytest tests/  # Example for Python tests, replace with your test command
+          pytest tests/ > result.log  # Example for Python tests, output to result.log
           # Or use other test command like `npm test` for Node.js
 
       # Step 7: Output the test results
       - name: Output test results
         run: |
           # Capture the output and save it as a result
-          pytest tests/ > result.log
           cat result.log  # Output the test result log
 
       # Step 8: Handle issues if found (Optional, for example, handling failed tests)
       - name: Check for test failures
         if: failure()  # Only runs if previous steps fail
         run: |
-          echo "Tests failed. Check logs for details."  # Example, could be customized
-          exit 1
+          echo "Tests failed. Check the logs below for detailed output."
+          cat result.log  # Display detailed test log
+          exit 1  # Exit with an error code to signal failure
 
       # Optional: Clean up environment (e.g., remove temporary files)
       - name: Clean up
