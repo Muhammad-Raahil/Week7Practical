@@ -1,76 +1,20 @@
-# CI Pipeline for Automated Testing
-name: CI Pipeline
-
-# Trigger the pipeline on push or pull request
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-# Define the CI pipeline jobs
 jobs:
-  build-and-test:
-    runs-on: ubuntu-latest  # Use Ubuntu as the OS for CI
+  behave-testing:
+    # Setup of simple OS of choice, i.e., Linux
+    # Create VM with Ubuntu OS
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository
-      - name: Checkout repository
-        uses: actions/checkout@v2
+      # Setup of environment for test
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
 
-      # Step 2: Set up the environment (Install necessary tools)
-      - name: Set up Python  # Example for Python, but can be customized for other languages
-        uses: actions/setup-python@v2
+      - name: List repo
+        run: |
+          ls
+
+      # Setup tools necessary for testing, search from marketplace
+      - name: Setup Python
+        uses: actions/setup-python@v5.3.0
         with:
-          python-version: '3.8'  # Set Python version, change if needed
-
-      # Step 3: Install dependencies/tools required for testing
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y curl git build-essential  # Install necessary tools
-          curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-          sudo apt-get install -y python3-pip  # Example for Python testing tools
-
-      # Step 4: Extract necessary repositories (i.e., source code and test scripts)
-      - name: Clone test repositories
-        run: |
-          git clone https://github.com/your-username/your-source-repo.git
-          git clone https://github.com/your-username/your-test-repo.git
-
-      # Step 5: Setup environment for tests (Install test tools)
-      - name: Install test dependencies
-        run: |
-          cd your-test-repo
-          pip install -r requirements.txt  # Install Python test dependencies
-          npm install  # Example for Node.js tests
-
-      # Step 6: Run the tests
-      - name: Run tests
-        run: |
-          cd your-test-repo
-          pytest tests/ > result.log  # Example for Python tests, output to result.log
-          # Or use other test command like `npm test` for Node.js
-
-      # Step 7: Output the test results
-      - name: Output test results
-        run: |
-          # Capture the output and save it as a result
-          cat result.log  # Output the test result log
-
-      # Step 8: Handle issues if found (Optional, for example, handling failed tests)
-      - name: Check for test failures
-        if: failure()  # Only runs if previous steps fail
-        run: |
-          echo "Tests failed. Check the logs below for detailed output."
-          cat result.log  # Display detailed test log
-          exit 1  # Exit with an error code to signal failure
-
-      # Optional: Clean up environment (e.g., remove temporary files)
-      - name: Clean up
-        run: |
-          rm -rf your-source-repo your-test-repo  # Cleanup cloned repositories
-
+          python-version: '3.9'
