@@ -38,4 +38,5 @@ jobs:
       # Run Behave tests
       - name: Run Behave tests
         run: |
+          source  ven/bin/activate
           behave
