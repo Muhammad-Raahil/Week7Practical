@@ -1,28 +1,27 @@
-from behave import *
 from calculator import add, subtract, multiply, divide
+from behave import *
 
-@given('the calculator is initialized')
-def step_given_calculator_initialized(context):
-    context.result = None
 
-@when('I add {a:d} and {b:d}')
-def step_when_add(context, a, b):
-    context.result = add(a, b)
+@given(u'the calculator is initialized')
+def step_impl(context):
+    context.calculator = None  # Calculator functions are imported directly
 
-@when('I subtract {a:d} from {b:d}')
-def step_when_subtract(context, a, b):
-    context.result = subtract(b, a)
+@when(u'I add {a:d} and {b:d}')
+def step_impl(context, a, b):
+    context.result = add(float(a), float(b))
 
-@when('I multiply {a:d} and {b:d}')
-def step_when_multiply(context, a, b):
-    context.result = multiply(a, b)
+@when(u'I subtract {a:d} from {b:d}')
+def step_impl(context, a, b):
+    context.result = subtract(float(b), float(a))
 
-@when('I divide {a:d} by {b:d}')
-def step_when_divide(context, a, b):
-    context.result = divide(a, b)
+@when(u'I multiply {a:d} and {b:d}')
+def step_impl(context, a, b):
+    context.result = multiply(float(a), float(b))
 
-@then('the result should be {expected_result}')
-def step_then_result_should_be(context, expected_result):
-    expected_result = int(expected_result)
-    assert context.result == expected_result, \
-        f"Expected {expected_result}, but got {context.result}"
+@when(u'I divide {a:d} by {b:d}')
+def step_impl(context, a, b):
+    context.result = divide(float(a), float(b))
+
+@then(u'the result should be {expected_result}')
+def step_impl(context, expected_result):
+    assert context.result == float(expected_result), f"Expected {expected_result} but got {context.result}"

@@ -1,75 +1,44 @@
-name: CI Automation Pipeline
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
+name: CI Process
+run-name: ${{ github.actor }} is learning GitHub Actions
+on: [push]
 jobs:
-  setup_and_test:
-    runs-on: ubuntu-latest  # Using an Ubuntu Linux environment
-    
+  behave-testing:
+    # Setup a simple OS of choice, i.e., Linux
+    # Create VM with Ubuntu OS
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write  # Grant permissions to create issues
+      
     steps:
-      # Step 1: Checkout the repository containing source code and test scripts
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      # Step 1: Checkout code from repository
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+      - name: Create an issue
+        uses: dacbd/create-issue-action@main
+        with:
+          token: ${{ github.token }}
+          title: Simple test issue
+          body: my new issue
 
-      # Step 2: Setup the environment (install dependencies)
-      - name: Setup OS and Dependencies
+      # Step 2: List files in the repository
+      - name: List repo
         run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential curl git python3 python3-pip
-          sudo apt-get install -y python3-venv
-          sudo apt-get install -y <other-dependencies>  # Replace with actual dependencies for your project
+          ls
 
-      # Step 3: Install Test Tools (including 'behave' for BDD testing)
-      - name: Install Test Tools (Behave and others)
+      # Step 3: Set up Python environment
+      - name: Set up Python
+        uses: actions/setup-python@v5.3.0
+        with:
+          python-version: '3.13'
+
+      # Step 4: Install Behave using pip
+      - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip
-          pip install -r requirements.txt  # If using Python; replace with tool-specific commands (npm, yarn, etc.)
-          pip install behave  # Installing behave for BDD testing
+          python -m pip install --upgrade pip
+          pip install behave==1.2.6  # Install Behave with a specific version (adjust version if needed)
 
-      # Step 4: Clone Additional Repositories (if necessary)
-      - name: Clone Additional Repositories (if necessary)
-        run: |
-          git clone https://github.com/your/repository.git  # Replace with actual repo URLs
-
-      # Step 5: Make setup_environment.sh executable
-      - name: Make setup_environment.sh executable
-        run: chmod +x steps/setup_environment.sh
-
-      # Step 6: Debug - Check the contents of the steps directory
-      - name: Debug - List files in steps directory
-        run: ls -l steps/
-
-      # Step 7: Debug - Display the content of setup_environment.sh
-      - name: Debug - Display setup_environment.sh content
-        run: cat steps/setup_environment.sh
-
-      # Step 8: Setup Test Environment
-      - name: Setup Test Environment
-        run: |
-          source steps/setup_environment.sh  # Custom environment setup script
-
-      # Step 9: Run Tests
-      - name: Run Tests
-        run: |
-          behave  # Running the BDD tests with behave
-
-      # Step 10: Output the Test Results
-      - name: Output Test Results
-        run: |
-          if [ -f result.log ]; then cat result.log; fi
-
-      # Step 11: Check for Issues (optional)
-      - name: Check for Issues
-        run: |
-          if grep -q "ERROR" result.log; then
-            echo "Issues found in the test!";
-            exit 1;
-          else
-            echo "No issues found.";
-          fi
+      # Step 5: Run Behave tests
+      - name: Run Behave tests
+        uses: cryptic-wizard/run-behave-tests@v0.4.0
+        with:
+          upload-artifact: true  # Default is true, adjust if needed
